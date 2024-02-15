@@ -59,9 +59,12 @@
     ]
   },
   "lint-staged": {
-    "src/**/*.{ts,tsx,js}": [
+    "*.{ts,tsx,js}": [
       "npm run lint --fix",
-      "npm test --passWithNoTests --bail"
+      "prettier --write"
+    ],
+    "*": [
+      "prettier --write"
     ]
   },
   "jest": {
