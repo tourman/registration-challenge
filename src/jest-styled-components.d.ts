@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
-import { NewPlugin } from "pretty-format";
-import { css } from "styled-components";
+import { NewPlugin } from 'pretty-format';
+import { css } from 'styled-components';
 
 declare global {
   namespace jest {
