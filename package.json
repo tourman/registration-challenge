@@ -19,6 +19,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "env:dev": "docker run -w /home/dev/registration-challenge --rm -it -v fork-env:/home/dev/.dev -v fork-npm-cache:/home/dev/.npm -v .:/home/dev/registration-challenge --name dev 8002615/dev || true",
+    "env:start": "docker run -w /home/dev/registration-challenge --rm -it -v fork-env:/home/dev/.dev -v fork-npm-cache:/home/dev/.npm -v .:/home/dev/registration-challenge -p 3000:3000 --name start 8002615/dev || true",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false",
