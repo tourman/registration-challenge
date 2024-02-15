@@ -1,8 +1,8 @@
-import * as S from "./styles";
+import * as S from './styles';
 
 const Main = ({
-  title = "CRA Boilerplate",
-  description = "TypeScript, ReactJS e Styled Components"
+  title = 'CRA Boilerplate',
+  description = 'TypeScript, ReactJS e Styled Components',
 }) => {
   return (
     <S.Wrapper>
