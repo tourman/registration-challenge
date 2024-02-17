@@ -21,9 +21,9 @@
   "scripts": {
     "env:dev": "docker run -w /home/dev/registration-challenge --rm -it -v fork-env:/home/dev/.dev -v fork-npm-cache:/home/dev/.npm -v .:/home/dev/registration-challenge --name dev 8002615/dev || true",
     "env:start": "docker run -w /home/dev/registration-challenge --rm -it -v fork-env:/home/dev/.dev -v fork-npm-cache:/home/dev/.npm -v .:/home/dev/registration-challenge -p 3000:3000 --name start 8002615/dev || true",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "test:watch": "react-scripts test",
     "lint": "eslint --cache --cache-strategy content",
@@ -80,6 +80,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "^6.5.16",
     "@storybook/addon-interactions": "^6.5.16",
