@@ -1,1 +1,5 @@
 generators/
+combinations
+*.pict
+pict
+.prettierignore
