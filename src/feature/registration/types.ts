@@ -68,7 +68,11 @@ export interface Save {
 }
 
 interface Translate {
-  (key: string, placeholders?: Record<string, unknown>): string;
+  (
+    key: string,
+    placeholderA?: Record<string, unknown>,
+    placeholderB?: Record<string, unknown>
+  ): string;
 }
 
 interface TransiteProps {
