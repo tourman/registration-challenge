@@ -1,7 +1,7 @@
 - [ ] Close country dropdown on change
 - [x] Check form saving
 - [x] Performance while typing. Probably the validation
-- [ ] Form wrapper
+- [x] Form wrapper
 - [ ] Translations by type
 - [ ] Using reducer: DIP for Redux-like
 - [ ] Observables
