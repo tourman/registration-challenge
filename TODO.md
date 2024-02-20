@@ -1,0 +1,5 @@
+- [ ] Close country dropdown on change
+- [x] Check form saving
+- [ ] Performance while typing. Probably the validation
+- [ ] Form wrapper
+- [ ] Translations by type
