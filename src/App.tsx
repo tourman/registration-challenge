@@ -1,7 +1,9 @@
-import Main from 'components/Main';
+import { ComponentType, ReactElement } from 'react';
 
-function App() {
-  return <Main />;
-}
+const App: ComponentType<{ children: () => ReactElement }> = function App({
+  children,
+}) {
+  return children();
+};
 
 export default App;
