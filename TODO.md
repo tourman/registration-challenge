@@ -2,6 +2,7 @@
 - [x] Check form saving
 - [x] Performance while typing. Probably the validation
 - [x] Form wrapper
+- [ ] Empty input date when it is invalid
 - [ ] Translations by type
 - [ ] Using reducer: DIP for Redux-like
 - [ ] Observables
