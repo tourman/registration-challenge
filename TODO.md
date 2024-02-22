@@ -8,3 +8,4 @@
 - [ ] Observables
 - [ ] Old entries feature
 - [ ] Select language feature
+- [ ] TS5
