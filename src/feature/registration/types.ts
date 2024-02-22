@@ -1,5 +1,7 @@
 import {
+  CountryMap,
   Entry,
+  Key,
   PartialEntry,
   UserFactory,
   ValidationRejectedResult,
@@ -67,12 +69,19 @@ export interface Save {
   (entry: Entry): Promise<void>;
 }
 
-interface Translate {
-  (
-    key: string,
-    placeholderA?: Record<string, unknown>,
-    placeholderB?: Record<string, unknown>
-  ): string;
+export type TranslateArgs =
+  | ['Please fill out the form correctly before submitting']
+  | ['done', Entry, CountryMap]
+  | ['Enter your first name']
+  | ['Enter your second name']
+  | ['Choose your country']
+  | ['Save']
+  | [`label:${Key}`]
+  | [`error:${ValidationType}`]
+  | [`country:${string}`, CountryMap];
+
+export interface Translate {
+  (...args: TranslateArgs): string;
 }
 
 interface TransiteProps {

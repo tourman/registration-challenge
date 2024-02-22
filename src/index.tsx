@@ -11,6 +11,7 @@ import React, { startTransition } from 'react';
 import ReactDOM from 'react-dom/client';
 import GlobalStyles from 'styles/global';
 import ExternalUtilTime from 'util/time';
+import translationFactory from 'util/translation';
 import App from './App';
 
 const root = ReactDOM.createRoot(
@@ -95,7 +96,7 @@ root.render(
             )
           )}
           getInitialState={getInitialState}
-          T={(string) => string}
+          T={translationFactory(ExternalUtilTime)}
           useRegistration={useRegistration}
           Component={RegistrationView}
           registerSecondaryTask={(task) => startTransition(() => task())}
