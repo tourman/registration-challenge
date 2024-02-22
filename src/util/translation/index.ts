@@ -1,7 +1,12 @@
-import { Translate } from 'feature/registration/types';
+import * as Registration from 'feature/registration/types';
+import * as List from 'feature/list/types';
 import TimeClass from './types';
 
-const translationFactory: (Time: TimeClass) => Translate = (Time) =>
+const translationFactory: (
+  Time: TimeClass
+) => (...args: Registration.TranslateArgs | List.TranslateArgs) => string = (
+  Time
+) =>
   function T(key, placeholder?, countries?): string {
     function isCountry(key: string): key is `country:${string}` {
       return key.startsWith('country:');
@@ -21,6 +26,9 @@ const translationFactory: (Time: TimeClass) => Translate = (Time) =>
         } years old!`;
       }
       case 'Please fill out the form correctly before submitting':
+      case 'Name':
+      case 'Country':
+      case 'Birthdate':
       case 'Save':
       case 'Enter your first name':
       case 'Enter your second name':

@@ -1,0 +1,8 @@
+.ui.segment > :nth-child(2) {
+  margin-top: 0;
+}
+
+.ui.active.dimmer {
+  margin: 1em 0;
+  position: relative;
+}

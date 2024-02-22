@@ -1,5 +1,6 @@
 import * as Entity from 'entity/user/types';
 import * as Translation from 'util/translation/types';
+import * as List from 'feature/list/types';
 import moment, { Moment } from 'moment';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -8,7 +9,8 @@ function isTime(time: any): time is Entity.Time {
 }
 
 const ExternalUtilTime: Entity.TimeClass &
-  Translation.TimeClass = class ExternalUtilTime
+  Translation.TimeClass &
+  List.TimeClass = class ExternalUtilTime
   implements Entity.Time, Translation.Time
 {
   readonly time: Moment;
@@ -59,6 +61,9 @@ const ExternalUtilTime: Entity.TimeClass &
   }
   day() {
     return this.time.format('Do');
+  }
+  static formatDate(time: string) {
+    return new Date(time).toLocaleDateString();
   }
 };
 
