@@ -1,46 +1,20 @@
-# Getting Started with Create React App
+# Registration Challenge
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+- [x] The app is built using [CRA](https://create-react-app.dev/) and [CRACO](https://craco.js.org/), incorporating ESLint and Prettier for code formatting, as well as a Docker environment for smooth and flexible development.
+- [x] TS is used for [DIP](https://en.wikipedia.org/wiki/Dependency_inversion_principle).
+- [x] Hooks are employed, including for state management within the application.
+- [x] The codebase follows the architectural and design principles of [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), providing flexibility to meet various business requirements.
+- [x] Additionally, some performance techniques and patterns are applied to enhance the overall efficiency and responsiveness of the application.
+- [ ] The sky's the limit, so it can be improved continuously.
+- [x] Users can input their personal data and save it within the application.
+- [x] Previously entered data can be accessed via the `/revisited` endpoint.
+- [x] Routing is currently implemented within the [main component](https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/ch26.xhtml) (see [index.tsx](./src/index.tsx)) as a temporary solution. This could be improved by moving it to a separate routing component/feature for better organization and maintainability.
+- [x] Data is stored in Local Storage using the storage emulator, with occasional network errors simulated at a probability of 1/3.
+- [x] Data manipulation operations utilize asynchronous functions.
+- [x] Microinteractions are implemented to enhance the user experience during data management.
+- [x] Internationalization (i18n) is supported through a translation function, currently only available in English.
+- [ ] Additional languages would require the development of a separate feature, such as a Language.
+- [ ] To reuse greetings within the list of existing users, a separate feature (e.g., Greeting) needs to be developed, or the greeting component can be extracted from the Registration feature.
+- [ ] Code generation capabilities to be integrated alongside GraphQL functionality.
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+The app is available here: https://tourman.github.io/registration-challenge.
