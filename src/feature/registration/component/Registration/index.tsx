@@ -7,6 +7,7 @@ import {
   Ref,
   ReactElement,
   FunctionComponent,
+  memo,
 } from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import {
@@ -23,6 +24,7 @@ import {
   Popup,
   Container,
 } from 'semantic-ui-react';
+import { shallowEqual } from 'shallow-equal';
 import './style.css';
 
 type PropsFrom<C> = C extends ComponentType<infer P>
@@ -43,32 +45,46 @@ function FormField<C>(
 
 const idPrefix = 'registration';
 
-function Field<K extends Key>(
-  props: {
-    name: K;
-    children: (props: {
-      id: string;
-      value: string;
-      error: boolean;
-      label: string;
-      handleChange: (value: string) => void;
-      disabled: boolean;
-    }) => ReactElement;
-    fields: Pick<InnerProps, Key>;
-    submitting: boolean;
-  } & Pick<InnerProps, 'onChange' | 'T'>
-): ReturnType<FunctionComponent> {
-  const { name, children, fields, onChange, T, submitting } = props;
-  const { value, error } = fields[name];
-  return children({
-    id: `${idPrefix}-${name}`,
-    value,
-    error: !!error,
-    label: error ? T(`error:${error}`) : T(`label:${name}`),
-    handleChange: (value) => onChange({ [name]: value }),
-    disabled: submitting,
-  });
+type FieldProps<K extends Key> = {
+  name: K;
+  children: (props: {
+    id: string;
+    value: string;
+    error: boolean;
+    label: string;
+    handleChange: (value: string) => void;
+    disabled: boolean;
+  }) => ReactElement;
+  fields: Pick<InnerProps, Key>;
+  submitting: boolean;
+  dependency?: unknown;
+} & Pick<InnerProps, 'onChange' | 'T'>;
+
+function extractToCompare<K extends Key>(props: FieldProps<K>) {
+  const { name, fields, submitting, onChange, T, dependency } = props;
+  const value = fields[name];
+  return { name, value, submitting, onChange, T, dependency };
 }
+
+const Field = memo(
+  function Field<K extends Key>(
+    props: FieldProps<K>
+  ): ReturnType<FunctionComponent> {
+    const { name, children, fields, onChange, T, submitting } = props;
+    const { value, error } = fields[name];
+    return children({
+      id: `${idPrefix}-${name}`,
+      value,
+      error: !!error,
+      label: error ? T(`error:${error}`) : T(`label:${name}`),
+      handleChange: (value) => onChange({ [name]: value }),
+      disabled: submitting,
+    });
+  },
+  (prev, next) => shallowEqual(extractToCompare(prev), extractToCompare(next))
+);
+
+Field.displayName = 'MemoizedField';
 
 const Registration: View = function Registration({
   done,
@@ -79,25 +95,28 @@ const Registration: View = function Registration({
   error,
   onSubmit,
   onChange,
+  registerSecondaryTask,
   ...fields
 }) {
   const [countries, setCountries] = useState<CountryMap>({});
   const [countryOptions, setCountryOptions] = useState<DropdownItemProps[]>([]);
   const { loadCountries } = user.validator;
   useEffect(() => {
-    loadCountries().then((countries) => {
-      setCountries(countries);
-      setCountryOptions(
-        Object.keys(countries)
-          .map((key) => ({
-            key,
-            value: key,
-            text: T(`country:${key}`, countries),
-          }))
-          .sort(({ text: a }, { text: b }) => (a < b ? -1 : 1))
-      );
-    });
-  }, [loadCountries, T]);
+    loadCountries().then((countries) =>
+      registerSecondaryTask(() => {
+        setCountries(countries);
+        setCountryOptions(
+          Object.keys(countries)
+            .map((key) => ({
+              key,
+              value: key,
+              text: T(`country:${key}`, countries),
+            }))
+            .sort(({ text: a }, { text: b }) => (a < b ? -1 : 1))
+        );
+      })
+    );
+  }, [loadCountries, T, registerSecondaryTask]);
   const fieldProps = { fields, onChange, T, submitting };
   return (
     <Form onSubmit={onSubmit} error={!!error} success={!!done}>
@@ -134,7 +153,7 @@ const Registration: View = function Registration({
           />
         )}
       </Field>
-      <Field name="country" {...fieldProps}>
+      <Field name="country" {...fieldProps} dependency={countryOptions}>
         {({ handleChange, disabled, ...props }) => (
           <FormField
             {...props}

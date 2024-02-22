@@ -8,6 +8,7 @@ const useRegistration: UseRegistration = function useRegistration({
   getInitialState,
   ...rest
 }) {
+  const { registerSecondaryTask } = rest;
   const [
     {
       display: { error, ...display },
@@ -36,15 +37,17 @@ const useRegistration: UseRegistration = function useRegistration({
     ) as {
       [K in keyof typeof validating]: NonNullable<(typeof validating)[K]>;
     };
+    const dispatchTask = (...args: Parameters<typeof dispatch>) =>
+      registerSecondaryTask(() => dispatch(...args));
     user.set(entry);
     // todo: discard update after unmount
     user
       .validate()
-      .then(() => dispatch({ type: 'VALIDATE', validated: validating }))
+      .then(() => dispatchTask({ type: 'VALIDATE', validated: validating }))
       .catch((error) =>
-        dispatch({ type: 'VALIDATE', error, validated: validating })
+        dispatchTask({ type: 'VALIDATE', error, validated: validating })
       );
-  }, [user, validating]);
+  }, [user, validating, registerSecondaryTask]);
   const [errorInstance, setErrorInstance] = useState<Error | undefined>();
   useEffect(() => {
     if (!submitting) {

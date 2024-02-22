@@ -7,7 +7,7 @@ import immerReducerFactory, {
 } from 'feature/registration/reducer';
 import validatorFactory from 'feature/registration/reducer/validate';
 import useRegistration from 'feature/registration/useRegistration';
-import React from 'react';
+import React, { startTransition } from 'react';
 import ReactDOM from 'react-dom/client';
 import GlobalStyles from 'styles/global';
 import ExternalUtilTime from 'util/time';
@@ -75,6 +75,7 @@ root.render(
             T={(string) => string}
             useRegistration={useRegistration}
             Component={RegistrationView}
+            registerSecondaryTask={(task) => startTransition(() => task())}
           />
         </>
       )}

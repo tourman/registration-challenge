@@ -77,6 +77,7 @@ interface Translate {
 
 interface TransiteProps {
   T: Translate;
+  registerSecondaryTask: (task: () => void) => void;
 }
 
 export interface OuterProps extends TransiteProps {
