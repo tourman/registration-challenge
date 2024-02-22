@@ -10,8 +10,10 @@ import immerReducerFactory, {
 } from 'feature/registration/reducer';
 import validatorFactory from 'feature/registration/reducer/validate';
 import useRegistration from 'feature/registration/useRegistration';
-import React, { startTransition } from 'react';
+import React, { ComponentType, startTransition } from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { Button, Container, Divider, Label } from 'semantic-ui-react';
 import GlobalStyles from 'styles/global';
 import storageFactory from 'util/storageEmulator';
 import ExternalUtilTime from 'util/time';
@@ -52,57 +54,91 @@ const storage = storageFactory('list');
 root.render(
   <React.StrictMode>
     <App>
-      {() =>
-        (
-          <List
-            loadList={storage.load}
-            loadCountries={loadCountries}
-            T={T}
-            Time={ExternalUtilTime}
-            Component={ListView}
-            useList={useList}
-          />
-        ) || (
-          <Registration
-            userFactory={() =>
-              new User(new UserValidator(loadCountries, ExternalUtilTime))
-            }
-            save={storage.save}
-            reducer={immerReducerFactory(
-              // todo: replace with the scheduler API
-              validatorFactory(
-                (() => {
-                  type Task = Parameters<typeof requestIdleCallback>[0];
-                  const tasks: Task[] = [];
-                  let working = false;
-                  function handle(...args: Parameters<Task>) {
-                    const task = tasks.shift();
-                    if (!task) {
-                      working = false;
-                      return;
-                    } else {
-                      task(...args);
-                      requestIdleCallback(handle);
+      {() => (
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="revisited"
+              element={
+                <>
+                  <Link to="/">
+                    <Button
+                      labelPosition="left"
+                      icon="arrow left"
+                      content="Back to form"
+                    />
+                  </Link>
+                  <List
+                    loadList={storage.load}
+                    loadCountries={loadCountries}
+                    T={T}
+                    Time={ExternalUtilTime}
+                    Component={ListView}
+                    useList={useList}
+                  />
+                </>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <>
+                  <Link to="/revisited">
+                    <Button
+                      labelPosition="right"
+                      icon="arrow right"
+                      content="See all users"
+                    />
+                  </Link>
+                  <Divider hidden />
+                  <Registration
+                    userFactory={() =>
+                      new User(
+                        new UserValidator(loadCountries, ExternalUtilTime)
+                      )
                     }
-                  }
-                  return (task: Task) => {
-                    tasks.push(task);
-                    if (!working) {
-                      working = true;
-                      requestIdleCallback(handle);
+                    save={storage.save}
+                    reducer={immerReducerFactory(
+                      // todo: replace with the scheduler API
+                      validatorFactory(
+                        (() => {
+                          type Task = Parameters<typeof requestIdleCallback>[0];
+                          const tasks: Task[] = [];
+                          let working = false;
+                          function handle(...args: Parameters<Task>) {
+                            const task = tasks.shift();
+                            if (!task) {
+                              working = false;
+                              return;
+                            } else {
+                              task(...args);
+                              requestIdleCallback(handle);
+                            }
+                          }
+                          return (task: Task) => {
+                            tasks.push(task);
+                            if (!working) {
+                              working = true;
+                              requestIdleCallback(handle);
+                            }
+                          };
+                        })()
+                      )
+                    )}
+                    getInitialState={getInitialState}
+                    T={T}
+                    useRegistration={useRegistration}
+                    Component={RegistrationView}
+                    registerSecondaryTask={(task) =>
+                      startTransition(() => task())
                     }
-                  };
-                })()
-              )
-            )}
-            getInitialState={getInitialState}
-            T={T}
-            useRegistration={useRegistration}
-            Component={RegistrationView}
-            registerSecondaryTask={(task) => startTransition(() => task())}
-          />
-        )
-      }
+                  />
+                </>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      )}
     </App>
     <GlobalStyles />
   </React.StrictMode>
