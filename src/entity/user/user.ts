@@ -7,7 +7,7 @@ import {
 } from './types';
 
 class User {
-  constructor(protected validator: Validator) {}
+  constructor(public readonly validator: Validator) {}
   protected entry: PartialEntry = {};
   set(entry: PartialEntry): void {
     this.entry = entry;

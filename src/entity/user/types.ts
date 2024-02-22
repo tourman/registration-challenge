@@ -1,3 +1,5 @@
+import User from './user';
+
 export const emptyUser = {
   name: '',
   surname: '',
@@ -15,6 +17,10 @@ export const keys = Object.keys(emptyUser) as Key[];
 
 export type Validator = {
   [K in keyof Entry]: (value?: Entry[K]) => Promise<void>;
+} & {
+  getMinDate(): string;
+  getMaxDate(): string;
+  loadCountries: LoadCountries;
 };
 
 const validationTypes = {
@@ -52,4 +58,27 @@ export function isValidationRejectedResult(
     result?.key in emptyUser &&
     (result?.reason?.message ?? result?.reason) in validationTypes
   );
+}
+
+export type AcceptedTime = Time | Date | string | number;
+
+export interface Time {
+  isTime(): 'Time';
+  getTime(): Exclude<AcceptedTime, Time>;
+  minusYears(years: number): Time;
+  minusDays(days: number): Time;
+  // should return in format 'yyyy-mm-dd'
+  toString(): string;
+  greaterThan(time: AcceptedTime): boolean;
+  lessOrEqualThan(time: AcceptedTime): boolean;
+}
+
+export interface TimeClass {
+  new (time: AcceptedTime): Time;
+  now(): Time;
+  isValid(time: string): boolean;
+}
+
+export interface UserFactory {
+  (): User;
 }
