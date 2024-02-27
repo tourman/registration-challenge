@@ -99,7 +99,31 @@ root.render(
           console.log('Saved result', result);
         }}
         reducer={immerReducerFactory(
-          validatorFactory((task) => requestIdleCallback(task)),
+          // todo: replace with the scheduler API
+          validatorFactory(
+            (() => {
+              type Task = Parameters<typeof requestIdleCallback>[0];
+              const tasks: Task[] = [];
+              let working = false;
+              function handle(...args: Parameters<Task>) {
+                const task = tasks.shift();
+                if (!task) {
+                  working = false;
+                  return;
+                } else {
+                  task(...args);
+                  requestIdleCallback(handle);
+                }
+              }
+              return (task: Task) => {
+                tasks.push(task);
+                if (!working) {
+                  working = true;
+                  requestIdleCallback(handle);
+                }
+              };
+            })(),
+          ),
         )}
         getInitialState={getInitialState}
         T={(string) => string}
