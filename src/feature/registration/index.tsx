@@ -64,7 +64,7 @@ interface GetInitialState {
   (): State;
 }
 
-interface Save {
+export interface Save {
   (entry: Entry): Promise<void>;
 }
 

@@ -11,6 +11,7 @@ import validatorFactory from 'feature/registration/reducer/validate';
 import useRegistration from 'feature/registration/useRegistration';
 import { startTransition, StrictMode, ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
+import storageFactory from 'util/storageEmulator';
 import ExternalUtilTime from 'util/time';
 import translationFactory from 'util/translation';
 import App from './App';
@@ -97,27 +98,14 @@ const loadCountries = () =>
 
 const T = translationFactory(ExternalUtilTime);
 
+const storage = storageFactory('list');
+
 root.render(
   <StrictMode>
     <App>
       {(
         <List
-          loadList={async () => [
-            {
-              id: 'a',
-              name: 'John',
-              surname: 'Smith',
-              country: 'us',
-              birthdate: '1990-04-07',
-            },
-            {
-              id: 'b',
-              name: 'João',
-              surname: 'Neves',
-              country: 'pt',
-              birthdate: '1989-11-10',
-            },
-          ]}
+          loadList={storage.load}
           loadCountries={loadCountries}
           T={T}
           Time={ExternalUtilTime}
@@ -128,19 +116,7 @@ root.render(
           userFactory={() =>
             new User(new UserValidator(loadCountries, ExternalUtilTime))
           }
-          save={async function emulateSave(result) {
-            await new Promise<void>((resolve, reject) =>
-              setTimeout(() => {
-                if (Math.random() < 1 / 3) {
-                  reject(new Error('Unable to save'));
-                } else {
-                  resolve();
-                }
-              }, 1000),
-            );
-            // eslint-disable-next-line no-console
-            console.log('Saved result', result);
-          }}
+          save={storage.save}
           reducer={immerReducerFactory(
             // todo: replace with the scheduler API
             validatorFactory(
