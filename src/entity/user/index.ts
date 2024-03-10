@@ -15,6 +15,10 @@ type Key = keyof Entry;
 
 export type Validator = {
   [K in keyof Entry]: (value?: Entry[K]) => Promise<void>;
+} & {
+  getMinDate(): string;
+  getMaxDate(): string;
+  loadCountries: LoadCountries;
 };
 
 const validationTypes = {
@@ -55,8 +59,31 @@ function isValidationRejectedResult(
   );
 }
 
+type AcceptedTime = Time | Date | string | number;
+
+interface Time {
+  isTime(): 'Time';
+  getTime(): Exclude<AcceptedTime, Time>;
+  minusYears(years: number): Time;
+  minusDays(days: number): Time;
+  // should return in format 'yyyy-mm-dd'
+  toString(): string;
+  greaterThan(time: AcceptedTime): boolean;
+  lessOrEqualThan(time: AcceptedTime): boolean;
+}
+
+export interface TimeClass {
+  new (time: AcceptedTime): Time;
+  now(): Time;
+  isValid(time: string): boolean;
+}
+
+interface UserFactory {
+  (): User;
+}
+
 class User {
-  constructor(protected validator: Validator) {}
+  constructor(public readonly validator: Validator) {}
   protected entry: PartialEntry = {};
   set(entry: PartialEntry): void {
     this.entry = entry;

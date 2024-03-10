@@ -1,6 +1,7 @@
 import defaultInvariant from 'invariant';
 import type {
   LoadCountries,
+  TimeClass,
   ValidationInvariant,
   Validator,
 } from 'entity/user';
@@ -10,7 +11,10 @@ const invariant: ValidationInvariant = function (condition, validationType) {
 };
 
 class UserValidator implements Validator {
-  constructor(protected loadCountries: LoadCountries) {}
+  constructor(
+    public readonly loadCountries: LoadCountries,
+    protected Time: TimeClass,
+  ) {}
   protected sanitizedString(value?: string): asserts value {
     invariant(value && value !== '', 'FULL_STRING');
     invariant(value.trim().replace(/\s+/g, ' ') === value, 'TRIMMED_STRING');
@@ -22,16 +26,19 @@ class UserValidator implements Validator {
     this.sanitizedString(value);
   }
   readonly ageLimitYears: number = 150;
+  getMinDate(): string {
+    return this.Time.now().minusYears(this.ageLimitYears).toString();
+  }
+  getMaxDate(): string {
+    return this.Time.now().minusDays(1).toString();
+  }
   async birthdate(value?: string) {
     this.sanitizedString(value);
-    invariant(/^\d{4}-\d{2}-\d{2}$/.test(value), 'DATE_FORMAT');
-    const date = new Date(value);
-    invariant(!isNaN(date.valueOf()), 'VALID_DATE');
-    invariant(date.getTime() < Date.now(), 'DATE_PAST');
-    invariant(
-      new Date().getFullYear() - date.getFullYear() < this.ageLimitYears,
-      'AGE_LIMIT',
-    );
+    invariant(this.Time.isValid(value), 'VALID_DATE');
+    const time = new this.Time(value);
+    invariant(time.toString() === value, 'DATE_FORMAT');
+    invariant(time.lessOrEqualThan(this.getMaxDate()), 'DATE_PAST');
+    invariant(time.greaterThan(this.getMinDate()), 'AGE_LIMIT');
   }
   async country(value?: string) {
     this.sanitizedString(value);
