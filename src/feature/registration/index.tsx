@@ -1,9 +1,12 @@
 import type {
   Entry,
   PartialEntry,
+  UserFactory,
   ValidationRejectedResult,
   ValidationType,
 } from 'entity/user';
+import User from 'entity/user';
+import { ComponentType } from 'react';
 
 type Fields = {
   [K in keyof Entry]: {
@@ -59,3 +62,48 @@ interface ReducerFactory {
 interface GetInitialState {
   (): State;
 }
+
+interface Save {
+  (entry: Entry): Promise<void>;
+}
+
+interface Translate {
+  (key: string, placeholders?: Record<string, unknown>): string;
+}
+
+interface TransitProps {
+  T: Translate;
+}
+
+interface OuterProps extends TransitProps {
+  userFactory: UserFactory;
+  save: Save;
+  reducer: Reducer;
+  getInitialState: GetInitialState;
+}
+
+interface InnerProps extends Omit<Display, 'error'>, TransitProps {
+  onChange: (payload: PartialEntry) => void;
+  onSubmit: () => void;
+  error?: Error;
+  user: User;
+}
+
+export interface UseRegistration {
+  (outerProps: OuterProps): InnerProps;
+}
+
+type View = ComponentType<InnerProps>;
+
+function registrationFactory({
+  useRegistration,
+}: {
+  useRegistration: UseRegistration;
+}): ComponentType<OuterProps & { Component: View }> {
+  return function Registration({ Component, ...outerProps }) {
+    const innerProps = useRegistration(outerProps);
+    return <Component {...innerProps} />;
+  };
+}
+
+// export default registrationFactory;

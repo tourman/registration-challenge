@@ -78,7 +78,7 @@ export interface TimeClass {
   isValid(time: string): boolean;
 }
 
-interface UserFactory {
+export interface UserFactory {
   (): User;
 }
 
@@ -105,4 +105,4 @@ class User {
   }
 }
 
-// export default User;
+export default User;
