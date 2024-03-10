@@ -4,12 +4,11 @@ import languageFactory from 'feature/language';
 import validatorFactory from 'feature/registration/reducer/validate';
 import { mapValues, memoize, noop } from 'lodash-es';
 import { ReactElement, StrictMode, startTransition } from 'react';
-import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import storageFactory from 'util/storageEmulator';
 import ExternalUtilTime from 'util/time';
 import withLoading from 'util/withLoading';
-import App from './App';
+import App from 'App';
 import switchFactory from 'feature/language/component/Button';
 import 'semantic-ui-css/semantic.css';
 import {
@@ -30,8 +29,6 @@ import {
 import type * as RegistrationTypes from 'feature/registration';
 import type * as ListTypes from 'feature/list';
 import type * as LanguageTypes from 'feature/language';
-
-const root = createRoot(document.getElementById('root') as HTMLElement);
 
 const def = <M,>(module: { default: M }): M => {
   return module.default;
@@ -270,76 +267,80 @@ function WaitFor<T>(props: {
   return children(subject);
 }
 
-root.render(
-  <StrictMode>
-    <App>
-      <Language defaultLang="en" Component={Switch} from={from}>
-        {({ renderSwitch, T }) => (
-          <BrowserRouter basename={basename}>
-            {renderSwitch()}
-            <Routes>
-              <Route
-                path={routes.revisited}
-                element={
-                  <>
-                    <Link to={routes.root}>
-                      <Button
-                        labelPosition="left"
-                        icon="arrow left"
-                        content="Back to form"
-                      />
-                    </Link>
-                    <WaitFor subject={T}>
-                      {(notEmptyT) => (
-                        <List
-                          loadList={storage.load}
-                          loadCountries={loadCountries}
-                          Time={ExternalUtilTime}
-                          T={notEmptyT}
+function main(render: (content: ReactElement) => void): void {
+  render(
+    <StrictMode>
+      <App>
+        <Language defaultLang="en" Component={Switch} from={from}>
+          {({ renderSwitch, T }) => (
+            <BrowserRouter basename={basename}>
+              {renderSwitch()}
+              <Routes>
+                <Route
+                  path={routes.revisited}
+                  element={
+                    <>
+                      <Link to={routes.root}>
+                        <Button
+                          labelPosition="left"
+                          icon="arrow left"
+                          content="Back to form"
                         />
-                      )}
-                    </WaitFor>
-                  </>
-                }
-              />
-              <Route
-                path="*"
-                element={
-                  <>
-                    <Link to={routes.revisited} relative="route">
-                      <Button
-                        labelPosition="right"
-                        icon="arrow right"
-                        content="See all users"
-                      />
-                    </Link>
-                    <Divider hidden />
-                    <WaitFor subject={T}>
-                      {(notEmptyT) => (
-                        <Registration
-                          userFactory={() =>
-                            new User(
-                              new UserValidator(
-                                loadCountries,
-                                ExternalUtilTime,
-                              ),
-                            )
-                          }
-                          save={storage.save}
-                          registerSecondaryTask={(task) =>
-                            startTransition(() => task())
-                          }
-                          T={notEmptyT}
+                      </Link>
+                      <WaitFor subject={T}>
+                        {(notEmptyT) => (
+                          <List
+                            loadList={storage.load}
+                            loadCountries={loadCountries}
+                            Time={ExternalUtilTime}
+                            T={notEmptyT}
+                          />
+                        )}
+                      </WaitFor>
+                    </>
+                  }
+                />
+                <Route
+                  path="*"
+                  element={
+                    <>
+                      <Link to={routes.revisited} relative="route">
+                        <Button
+                          labelPosition="right"
+                          icon="arrow right"
+                          content="See all users"
                         />
-                      )}
-                    </WaitFor>
-                  </>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
-        )}
-      </Language>
-    </App>
-  </StrictMode>,
-);
+                      </Link>
+                      <Divider hidden />
+                      <WaitFor subject={T}>
+                        {(notEmptyT) => (
+                          <Registration
+                            userFactory={() =>
+                              new User(
+                                new UserValidator(
+                                  loadCountries,
+                                  ExternalUtilTime,
+                                ),
+                              )
+                            }
+                            save={storage.save}
+                            registerSecondaryTask={(task) =>
+                              startTransition(() => task())
+                            }
+                            T={notEmptyT}
+                          />
+                        )}
+                      </WaitFor>
+                    </>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          )}
+        </Language>
+      </App>
+    </StrictMode>,
+  );
+}
+
+export default main;

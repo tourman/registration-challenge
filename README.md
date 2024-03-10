@@ -8,7 +8,7 @@
 - [ ] The sky's the limit, so it can be improved continuously.
 - [x] Users can input their personal data and save it within the application.
 - [x] Previously entered data can be accessed via the `/revisited` endpoint.
-- [x] Routing is currently implemented within the [main component](https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/ch26.xhtml) (see [index.tsx](./src/index.tsx)) as a temporary solution. This could be improved by moving it to a separate routing component/feature for better organization and maintainability.
+- [x] Routing is currently implemented within the [main component](https://www.oreilly.com/library/view/clean-architecture-a/9780134494272/ch26.xhtml) (see [index.tsx](./src/main/index.tsx)) as a temporary solution. This could be improved by moving it to a separate routing component/feature for better organization and maintainability.
 - [x] Data is stored in Local Storage using the storage emulator, with occasional network errors simulated at a probability of 1/3.
 - [x] Data manipulation operations utilize asynchronous functions.
 - [x] Microinteractions are implemented to enhance the user experience during data management.
