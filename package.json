@@ -10,6 +10,7 @@
     "@types/node": "^16.18.81",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
+    "immer": "^10.0.3",
     "invariant": "^2.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -22,6 +23,8 @@
   "scripts": {
     "env:dev": "docker run -w /home/dev/registration-challenge --rm -it -v fork-env:/home/dev/.dev -v fork-npm-cache:/home/dev/.npm -v .:/home/dev/registration-challenge --name dev 8002615/dev || true",
     "env:start": "docker run -w /home/dev/registration-challenge --rm -it -v fork-env:/home/dev/.dev -v fork-npm-cache:/home/dev/.npm -v .:/home/dev/registration-challenge -p 3000:3000 --name start 8002615/dev || true",
+    "env:test": "docker run -w /home/dev/registration-challenge --rm -it -v fork-env:/home/dev/.dev -v fork-npm-cache:/home/dev/.npm -v .:/home/dev/registration-challenge --name test 8002615/dev || true",
+    "reg:pict": "cd src/feature/registration/reducer/test && ./pict",
     "start": "craco start",
     "build": "craco build",
     "test": "craco test",

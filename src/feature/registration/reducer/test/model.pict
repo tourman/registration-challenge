@@ -1,0 +1,19 @@
+S.FieldErrors:   -, yes
+S.Submitting:    -, yes
+S.Error:         -, yes
+S.Validating:    -, yes
+
+Action:          CHANGE, VALIDATE, SUBMIT, DONE, ERROR
+A.Error:         -, yes
+A.Validated:     -, same, another
+
+# Action restrictions
+if [Action] = "VALIDATE" then [A.Validated] <> "-" else [A.Error] = "-" and [A.Validated] = "-";
+if [Action] = "VALIDATE" then [S.Validating] = "yes";
+if [Action] in {"DONE", "ERROR"} then [S.Submitting] = "yes";
+
+# Don't submit if empty or validating
+if [S.FieldErrors] = "yes" or [S.Validating] = "yes" then [S.Submitting] <> "yes";
+
+# No error while submitting
+if [S.Submitting] = "yes" then [S.Error] = "-";

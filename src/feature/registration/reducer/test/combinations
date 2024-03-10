@@ -1,0 +1,13 @@
+S.FieldErrors	S.Submitting	S.Error	S.Validating	Action	A.Error	A.Validated
+-	-	yes	-	CHANGE	-	-
+yes	-	yes	yes	VALIDATE	yes	same
+yes	-	-	yes	CHANGE	-	-
+-	yes	-	-	DONE	-	-
+-	yes	-	-	ERROR	-	-
+-	-	-	yes	VALIDATE	-	same
+-	yes	-	-	CHANGE	-	-
+yes	-	-	-	SUBMIT	-	-
+-	-	-	yes	VALIDATE	yes	another
+yes	-	yes	yes	VALIDATE	-	another
+-	-	yes	yes	SUBMIT	-	-
+-	yes	-	-	SUBMIT	-	-

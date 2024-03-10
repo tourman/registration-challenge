@@ -5,13 +5,13 @@ const emptyUser = {
   country: '',
 };
 
-type Entry = typeof emptyUser;
+export type Entry = typeof emptyUser;
 
-type PartialEntry = Partial<Entry>;
+export type PartialEntry = Partial<Entry>;
 
-type Key = keyof Entry;
+export type Key = keyof Entry;
 
-// const keys = Object.keys(emptyUser) as Key[];
+export const keys = Object.keys(emptyUser) as Key[];
 
 export type Validator = {
   [K in keyof Entry]: (value?: Entry[K]) => Promise<void>;
@@ -31,7 +31,7 @@ const validationTypes = {
   COUNTRY: 'Country code must be valid',
 } as const;
 
-type ValidationType = keyof typeof validationTypes;
+export type ValidationType = keyof typeof validationTypes;
 
 export interface ValidationInvariant {
   (condition: unknown, validationType: ValidationType): asserts condition;
@@ -43,7 +43,7 @@ export interface LoadCountries {
   (): Promise<CountryMap>;
 }
 
-interface ValidationRejectedResult extends PromiseRejectedResult {
+export interface ValidationRejectedResult extends PromiseRejectedResult {
   key: Key;
   reason: ValidationType | { message: ValidationType };
 }
@@ -89,7 +89,6 @@ class User {
     this.entry = entry;
   }
   async validate(): Promise<void> {
-    const keys = Object.keys(emptyUser) as Key[];
     await Promise.allSettled(
       keys.map((key) => this.validator[key](this.entry[key])),
     )
