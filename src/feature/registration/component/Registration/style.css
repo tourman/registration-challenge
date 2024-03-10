@@ -1,0 +1,6 @@
+.ui.form .field label {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+  overflow-x: hidden;
+}

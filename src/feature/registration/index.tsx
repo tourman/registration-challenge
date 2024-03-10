@@ -1,4 +1,5 @@
 import type {
+  CountryMap,
   Entry,
   PartialEntry,
   UserFactory,
@@ -68,7 +69,11 @@ interface Save {
 }
 
 interface Translate {
-  (key: string, placeholders?: Record<string, unknown>): string;
+  (
+    key: string,
+    placeholderA?: Record<string, unknown>,
+    placeholderB?: Record<string, unknown>,
+  ): string;
 }
 
 interface TransitProps {
@@ -82,11 +87,12 @@ interface OuterProps extends TransitProps {
   getInitialState: GetInitialState;
 }
 
-interface InnerProps extends Omit<Display, 'error'>, TransitProps {
+export interface InnerProps extends Omit<Display, 'error'>, TransitProps {
   onChange: (payload: PartialEntry) => void;
   onSubmit: () => void;
   error?: Error;
   user: User;
+  countries: CountryMap;
 }
 
 export interface UseRegistration {

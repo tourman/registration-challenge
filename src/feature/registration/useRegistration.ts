@@ -1,5 +1,12 @@
 import type { UseRegistration } from 'feature/registration';
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useState,
+} from 'react';
 
 const useRegistration: UseRegistration = function useRegistration({
   userFactory,
@@ -58,12 +65,20 @@ const useRegistration: UseRegistration = function useRegistration({
         setErrorInstance(err);
       });
   }, [save, submitting]);
+  const { loadCountries } = user.validator;
+  const [countries, setCountries] = useState<
+    Awaited<ReturnType<typeof loadCountries>>
+  >({});
+  useLayoutEffect(() => {
+    loadCountries().then(setCountries);
+  }, [loadCountries]);
   return {
     onChange,
     onSubmit,
     ...display,
     error: error ? errorInstance : void 0,
     user,
+    countries,
     ...rest,
   };
 };

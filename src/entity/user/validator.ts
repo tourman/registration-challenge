@@ -47,4 +47,4 @@ class UserValidator implements Validator {
   }
 }
 
-// export default UserValidator;
+export default UserValidator;

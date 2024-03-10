@@ -37,7 +37,7 @@ export interface ValidationInvariant {
   (condition: unknown, validationType: ValidationType): asserts condition;
 }
 
-type CountryMap = Record<string, string>;
+export type CountryMap = Record<string, string>;
 
 export interface LoadCountries {
   (): Promise<CountryMap>;
@@ -59,9 +59,9 @@ function isValidationRejectedResult(
   );
 }
 
-type AcceptedTime = Time | Date | string | number;
+export type AcceptedTime = Time | Date | string | number;
 
-interface Time {
+export interface Time {
   isTime(): 'Time';
   getTime(): Exclude<AcceptedTime, Time>;
   minusYears(years: number): Time;
