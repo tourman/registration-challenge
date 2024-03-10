@@ -7,6 +7,10 @@ const enFactory: Factory = (Time) =>
       return placeholder?.[key.replace('country:', '')] ?? key;
     }
     switch (key) {
+      case 'lang:en':
+      case 'lang:pt': {
+        return key.replace('lang:', '').toUpperCase();
+      }
       case 'done': {
         const { name, birthdate, country } = placeholder;
         const time = new Time(birthdate);
