@@ -113,16 +113,29 @@ const loadCountries = memoize(async () => {
   return result;
 });
 
+const loadCountryNames = memoize(async (key: Lang) => {
+  const loadLang = passLangStruct({
+    en: () => import('i18n-iso-countries/langs/en.json').then(def),
+    pt: () => import('i18n-iso-countries/langs/pt.json').then(def),
+  });
+  const [{ registerLocale, getNames }, lang] = await Promise.all([
+    import('i18n-iso-countries'),
+    loadLang[key](),
+  ]);
+  registerLocale(lang);
+  return getNames(key);
+});
+
 const factories = {
   T: mapValues(
-    {
+    passLangStruct({
       en: () => import('util/translation/en'),
       pt: () => import('util/translation/pt'),
-    },
-    (load) => async () => {
+    }),
+    (load, lang) => async () => {
       const [factory, countries] = await Promise.all([
         load().then(def),
-        loadCountries(),
+        loadCountryNames(lang as Lang),
       ]);
       return factory({ Time: ExternalUtilTime, countries });
     },
@@ -295,10 +308,20 @@ function artificialT<M>(factory: () => Promise<M>): () => Promise<M> {
   return () => factory().then(wait(1000));
 }
 
-const Language = languageFactory({
-  en: artificialT(factories.T.en),
-  pt: artificialT(factories.T.pt),
-});
+type Lang = 'en' | 'pt';
+
+function passLangStruct<T, S extends Record<Lang, T>>(
+  struct: keyof S extends Lang ? S : never,
+): S {
+  return struct;
+}
+
+const Language = languageFactory(
+  passLangStruct({
+    en: artificialT(factories.T.en),
+    pt: artificialT(factories.T.pt),
+  }),
+);
 
 const SwitchSUIR = switchFactory<keyof typeof factories.T>();
 
