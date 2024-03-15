@@ -37,7 +37,6 @@ const immerReducerFactory =
             ) {
               toValidate = true;
               draft.display[key].value = value;
-              draft.display[key].error = null;
             }
           }
           if (toValidate) {

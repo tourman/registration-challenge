@@ -223,7 +223,7 @@ const cases: Case[] = [
       display: {
         name: { value: '', error: null },
         surname: { value: '', error: null },
-        birthdate: { value: '1990-02-02', error: null },
+        birthdate: { value: '1990-02-02', error: 'DATE_FORMAT' },
         country: { value: 'd', error: null },
         allowSubmit: false,
         submitting: false,
