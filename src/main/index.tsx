@@ -155,6 +155,7 @@ const Load: Parameters<typeof withLoading>[1]['Load'] = function Load() {
   );
 };
 
+// todo: move the whole logic with the reducer to a worker and validate everything there, disable the validation in the main thread
 function improve<M>(worker: Worker): (message: M) => void {
   const queue: M[] = [];
   let busy = false;

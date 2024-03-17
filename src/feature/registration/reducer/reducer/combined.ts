@@ -23,6 +23,7 @@ const immerReducerFactory =
         result.display = { ...result.display, allowSubmit };
       }
     }
+    // todo: move the new changes to the new reducer instance
     if (type === 'CHANGE') {
       (() => {
         if (state.submitting) {
