@@ -1,10 +1,16 @@
 import type { Factory } from 'util/translation';
 import isCountry from './isCountry';
 
-const enFactory: Factory = (Time) =>
-  function T(key, placeholder?, countries?): string {
-    if (isCountry(key) && placeholder && !('name' in placeholder)) {
-      return placeholder?.[key.replace('country:', '')] ?? key;
+const enFactory: Factory = ({ Time, countries }) =>
+  function T(key, placeholder?): string {
+    if (isCountry(key)) {
+      const countryKey = key.replace('country:', '');
+      return (
+        countries[countryKey] ??
+        countries[countryKey.toLocaleLowerCase()] ??
+        countries[countryKey.toUpperCase()] ??
+        key
+      );
     }
     switch (key) {
       case 'lang:en':
@@ -16,7 +22,6 @@ const enFactory: Factory = (Time) =>
         const time = new Time(birthdate);
         return `Olá ${name} de ${T(
           `country:${country}`,
-          countries,
         )}, no dia ${time.day()} de ${time.month()} fará ${
           time.ageYears() + 1
         } anos!`;

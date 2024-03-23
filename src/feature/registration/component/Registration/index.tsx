@@ -120,7 +120,7 @@ function Registration({
         .map((key) => ({
           key,
           value: key,
-          text: T(`country:${key}`, countries),
+          text: T(`country:${key}`),
         }))
         .sort(({ text: a }, { text: b }) => (a < b ? -1 : 1)),
     [countries, T],
@@ -209,7 +209,7 @@ function Registration({
             </Grid.Column>
             <Grid.Column width={11}>
               {error && <Message error content={error.toString()} />}
-              {done && <Message success content={T('done', done, countries)} />}
+              {done && <Message success content={T('done', done)} />}
             </Grid.Column>
           </Grid.Row>
         </Grid>

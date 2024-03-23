@@ -94,7 +94,7 @@ function areCountries(data: any): data is RawCountries {
 }
 
 // https://github.com/trevorblades/countries?tab=readme-ov-file
-const loadCountries = async () => {
+const loadCountries = memoize(async () => {
   const { gql } = await import('@apollo/client');
   const client = await getClient();
   const query = gql`
@@ -111,7 +111,7 @@ const loadCountries = async () => {
     data.countries.map(({ native, code }) => [code, native]),
   );
   return result;
-};
+});
 
 const factories = {
   T: mapValues(
@@ -119,10 +119,13 @@ const factories = {
       en: () => import('util/translation/en'),
       pt: () => import('util/translation/pt'),
     },
-    (load) => () =>
-      load()
-        .then(def)
-        .then((translationFactory) => translationFactory(ExternalUtilTime)),
+    (load) => async () => {
+      const [factory, countries] = await Promise.all([
+        load().then(def),
+        loadCountries(),
+      ]);
+      return factory({ Time: ExternalUtilTime, countries });
+    },
   ),
 };
 

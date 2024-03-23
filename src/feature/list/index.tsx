@@ -11,7 +11,7 @@ export type TranslateArgs =
   | ['Name']
   | ['Birthdate']
   | ['Country']
-  | [`country:${string}`, User.CountryMap];
+  | [`country:${string}`];
 
 export interface Translate {
   (...args: TranslateArgs): string;
@@ -44,7 +44,6 @@ export interface InnerProps extends TransitProps {
   list: Entry[];
   loading: boolean;
   error?: Error;
-  countries: User.CountryMap;
 }
 
 export interface UseList {

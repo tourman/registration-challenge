@@ -1,6 +1,7 @@
 import type * as Registration from 'feature/registration';
 import type * as List from 'feature/list';
 import type * as Language from 'feature/language';
+import type { CountryMap } from 'entity/user';
 
 export interface Time {
   ageYears(): number;
@@ -17,7 +18,7 @@ export default TimeClass;
 type MainArgs = ['Back to form'] | ['See all users'];
 
 export interface Factory {
-  (Time: TimeClass): (
+  (deps: { Time: TimeClass; countries: CountryMap }): (
     ...args:
       | Registration.TranslateArgs
       | List.TranslateArgs

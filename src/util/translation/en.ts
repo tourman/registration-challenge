@@ -1,14 +1,14 @@
 import type { Factory } from 'util/translation';
 import isCountry from './isCountry';
 
-const enFactory: Factory = (Time) =>
-  function T(key, placeholder?, countries?): string {
-    if (isCountry(key) && placeholder && !('name' in placeholder)) {
+const enFactory: Factory = ({ Time, countries }) =>
+  function T(key, placeholder?): string {
+    if (isCountry(key)) {
       const countryKey = key.replace('country:', '');
       return (
-        placeholder?.[countryKey] ??
-        placeholder?.[countryKey.toLocaleLowerCase()] ??
-        placeholder?.[countryKey.toUpperCase()] ??
+        countries[countryKey] ??
+        countries[countryKey.toLocaleLowerCase()] ??
+        countries[countryKey.toUpperCase()] ??
         key
       );
     }
@@ -22,7 +22,6 @@ const enFactory: Factory = (Time) =>
         const time = new Time(birthdate);
         return `Hello ${name} from ${T(
           `country:${country}`,
-          countries,
         )}, on ${time.day()} of ${time.month()} you will be ${
           time.ageYears() + 1
         } years old!`;

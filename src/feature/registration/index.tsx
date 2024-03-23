@@ -70,14 +70,14 @@ export interface Save {
 
 export type TranslateArgs =
   | ['Please fill out the form correctly before submitting']
-  | ['done', Entry, CountryMap]
+  | ['done', Entry]
   | ['Enter your first name']
   | ['Enter your second name']
   | ['Choose your country']
   | ['Save']
   | [`label:${Key}`]
   | [`error:${ValidationType}`]
-  | [`country:${string}`, CountryMap];
+  | [`country:${string}`];
 
 export interface Translate {
   (...args: TranslateArgs): string;

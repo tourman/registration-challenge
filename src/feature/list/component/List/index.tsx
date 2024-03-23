@@ -8,7 +8,6 @@ function List({
   loading,
   error,
   list,
-  countries,
   T,
   Time,
   renderHeaderCell = emptyRender,
@@ -46,7 +45,7 @@ function List({
                 <Table.Cell>
                   {name} {surname}
                 </Table.Cell>
-                <Table.Cell>{T(`country:${country}`, countries)}</Table.Cell>
+                <Table.Cell>{T(`country:${country}`)}</Table.Cell>
                 <Table.Cell>{Time.formatDate(birthdate)}</Table.Cell>
                 {renderBodyCell(index)}
               </Table.Row>
