@@ -9,6 +9,7 @@ import useRegistration from 'feature/registration/useRegistration';
 import { startTransition, StrictMode, ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
 import ExternalUtilTime from 'util/time';
+import translationFactory from 'util/translation';
 import App from './App';
 import 'semantic-ui-css/semantic.css';
 import {
@@ -126,7 +127,7 @@ root.render(
           ),
         )}
         getInitialState={getInitialState}
-        T={(string) => string}
+        T={translationFactory(ExternalUtilTime)}
         Component={RegistrationView}
         registerSecondaryTask={(task) => startTransition(() => task())}
       />

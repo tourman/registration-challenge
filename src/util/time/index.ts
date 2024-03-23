@@ -1,14 +1,18 @@
-import type { AcceptedTime, Time, TimeClass } from 'entity/user';
+import type * as Entity from 'entity/user';
+import type * as Translation from 'util/translation';
 import moment, { Moment } from 'moment';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isTime(time: any): time is Time {
+function isTime(time: any): time is Entity.Time {
   return time?.isTime?.() === 'Time';
 }
 
-const ExternalUtilTime: TimeClass = class ExternalUtilTime implements Time {
+const ExternalUtilTime: Entity.TimeClass &
+  Translation.TimeClass = class ExternalUtilTime
+  implements Entity.Time, Translation.Time
+{
   readonly time: Moment;
-  protected toMoment(time: AcceptedTime): Moment {
+  protected toMoment(time: Entity.AcceptedTime): Moment {
     if (time instanceof ExternalUtilTime) {
       return this.time;
     } else if (isTime(time)) {
@@ -17,7 +21,7 @@ const ExternalUtilTime: TimeClass = class ExternalUtilTime implements Time {
       return moment(time);
     }
   }
-  constructor(time: AcceptedTime) {
+  constructor(time: Entity.AcceptedTime) {
     this.time = this.toMoment(time);
   }
   isTime(): 'Time' {
@@ -32,10 +36,10 @@ const ExternalUtilTime: TimeClass = class ExternalUtilTime implements Time {
   minusDays(days: number) {
     return new ExternalUtilTime(this.time.subtract(days, 'days').toDate());
   }
-  greaterThan(time: AcceptedTime) {
+  greaterThan(time: Entity.AcceptedTime) {
     return this.time.unix() > this.toMoment(time).unix();
   }
-  lessOrEqualThan(time: AcceptedTime) {
+  lessOrEqualThan(time: Entity.AcceptedTime) {
     return this.time.unix() <= this.toMoment(time).unix();
   }
   toString() {
@@ -46,6 +50,15 @@ const ExternalUtilTime: TimeClass = class ExternalUtilTime implements Time {
   }
   static isValid(time: string) {
     return moment(time).isValid();
+  }
+  ageYears() {
+    return moment().diff(this.time, 'years');
+  }
+  month() {
+    return this.time.format('MMM');
+  }
+  day() {
+    return this.time.format('Do');
   }
 };
 
