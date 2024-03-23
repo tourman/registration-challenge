@@ -323,13 +323,16 @@ function main(render: (content: ReactElement) => void): void {
                   path={routes.revisited}
                   element={
                     <>
-                      <Link to={routes.root}>
-                        <Button
-                          labelPosition="left"
-                          icon="arrow left"
-                          content="Back to form"
-                        />
-                      </Link>
+                      {T && (
+                        <Link to={routes.root}>
+                          <Button
+                            labelPosition="left"
+                            icon="arrow left"
+                            content={T('Back to form')}
+                          />
+                        </Link>
+                      )}
+                      <Divider hidden />
                       <WaitFor subject={T}>
                         {(notEmptyT) => (
                           <List
@@ -347,13 +350,15 @@ function main(render: (content: ReactElement) => void): void {
                   path="*"
                   element={
                     <>
-                      <Link to={routes.revisited} relative="route">
-                        <Button
-                          labelPosition="right"
-                          icon="arrow right"
-                          content="See all users"
-                        />
-                      </Link>
+                      {T && (
+                        <Link to={routes.revisited} relative="route">
+                          <Button
+                            labelPosition="right"
+                            icon="arrow right"
+                            content={T('See all users')}
+                          />
+                        </Link>
+                      )}
                       <Divider hidden />
                       <WaitFor subject={T}>
                         {(notEmptyT) => (

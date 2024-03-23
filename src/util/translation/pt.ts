@@ -60,6 +60,12 @@ const enFactory: Factory = (Time) =>
       case 'label:country': {
         return 'País';
       }
+      case 'Back to form': {
+        return 'Voltar ao formulário';
+      }
+      case 'See all users': {
+        return 'Ver todos os usuários';
+      }
       default: {
         return key;
       }

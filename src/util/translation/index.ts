@@ -14,11 +14,14 @@ export interface TimeClass {
 
 export default TimeClass;
 
+type MainArgs = ['Back to form'] | ['See all users'];
+
 export interface Factory {
   (Time: TimeClass): (
     ...args:
       | Registration.TranslateArgs
       | List.TranslateArgs
       | Language.TranslateArgs<'en' | 'pt'>
+      | MainArgs
   ) => string;
 }
