@@ -83,4 +83,4 @@ const useRegistration: UseRegistration = function useRegistration({
   };
 };
 
-// export default useRegistration;
+export default useRegistration;

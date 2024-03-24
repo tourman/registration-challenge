@@ -1,4 +1,4 @@
-import type {
+import User, {
   CountryMap,
   Entry,
   PartialEntry,
@@ -6,7 +6,6 @@ import type {
   ValidationRejectedResult,
   ValidationType,
 } from 'entity/user';
-import User from 'entity/user';
 import { ComponentType } from 'react';
 
 type Fields = {
@@ -112,4 +111,4 @@ function registrationFactory({
   };
 }
 
-// export default registrationFactory;
+export default registrationFactory;

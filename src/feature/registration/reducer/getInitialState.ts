@@ -17,4 +17,4 @@ function getInitialState(): State {
   };
 }
 
-// export default getInitialState;
+export default getInitialState;
