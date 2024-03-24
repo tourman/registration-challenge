@@ -68,7 +68,7 @@ interface Save {
   (entry: Entry): Promise<void>;
 }
 
-type TranslateArgs =
+export type TranslateArgs =
   | ['Please fill out the form correctly before submitting']
   | ['done', Entry, CountryMap]
   | ['Enter your first name']
@@ -87,7 +87,7 @@ interface TransitProps {
   T: Translate;
 }
 
-interface OuterProps extends TransitProps {
+export interface OuterProps extends TransitProps {
   userFactory: UserFactory;
   save: Save;
   reducer: Reducer;

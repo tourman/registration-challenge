@@ -1,4 +1,5 @@
-import type { Translate } from 'feature/registration';
+import * as Registration from 'feature/registration';
+import * as List from 'feature/list';
 
 export interface Time {
   ageYears(): number;
@@ -14,7 +15,11 @@ function isCountry(key: string): key is `country:${string}` {
   return key.startsWith('country:');
 }
 
-const translationFactory: (Time: TimeClass) => Translate = (Time) =>
+const translationFactory: (
+  Time: TimeClass,
+) => (...args: Registration.TranslateArgs | List.TranslateArgs) => string = (
+  Time,
+) =>
   function T(key, placeholder?, countries?): string {
     if (isCountry(key) && placeholder && !('name' in placeholder)) {
       return placeholder?.[key.replace('country:', '')] ?? key;
@@ -31,6 +36,9 @@ const translationFactory: (Time: TimeClass) => Translate = (Time) =>
         } years old!`;
       }
       case 'Please fill out the form correctly before submitting':
+      case 'Name':
+      case 'Country':
+      case 'Birthdate':
       case 'Save':
       case 'Enter your first name':
       case 'Enter your second name':
