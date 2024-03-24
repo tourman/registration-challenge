@@ -1,4 +1,5 @@
 import immer from 'feature/registration/reducer/reducer/immer';
+import combined from 'feature/registration/reducer/reducer/combined';
 import importedCases from './cases';
 import type { Action, State } from 'feature/registration';
 import validatorFactory from 'feature/registration/reducer/validate';
@@ -16,6 +17,7 @@ const cases: Case[] = importedCases;
 
 const reducers = {
   immer: immer(validatorFactory((task) => task())),
+  combined: combined(validatorFactory((task) => task())),
 };
 
 describe('registration', () => {

@@ -186,29 +186,34 @@ function Registration({
         <Grid>
           <Grid.Row>
             <Grid.Column width={5}>
-              <Popup
-                disabled={allowSubmit}
-                size="small"
-                on="hover"
-                position="right center"
-                trigger={
-                  <Container>
-                    <Button
-                      loading={submitting}
-                      type="submit"
-                      disabled={!allowSubmit}
-                      fluid
-                      size="big"
-                      color={error ? 'red' : 'blue'}
-                    >
-                      {T('Save')}
-                    </Button>
-                  </Container>
-                }
-                content={T(
-                  'Please fill out the form correctly before submitting',
-                )}
-              />
+              {useMemo(
+                () => (
+                  <Popup
+                    disabled={allowSubmit}
+                    size="small"
+                    on="hover"
+                    position="right center"
+                    trigger={
+                      <Container>
+                        <Button
+                          loading={submitting}
+                          type="submit"
+                          disabled={!allowSubmit}
+                          fluid
+                          size="big"
+                          color={error ? 'red' : 'blue'}
+                        >
+                          {T('Save')}
+                        </Button>
+                      </Container>
+                    }
+                    content={T(
+                      'Please fill out the form correctly before submitting',
+                    )}
+                  />
+                ),
+                [Button, Container, Popup, T, allowSubmit, error, submitting],
+              )}
             </Grid.Column>
             <Grid.Column width={11}>
               {error && <Message error content={error.toString()} />}

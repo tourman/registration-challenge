@@ -155,6 +155,27 @@ const Load: Parameters<typeof withLoading>[1]['Load'] = function Load() {
   );
 };
 
+function improve<M>(worker: Worker): (message: M) => void {
+  const queue: M[] = [];
+  let busy = false;
+  return async (message) => {
+    queue.push(message);
+    if (busy) return;
+    busy = true;
+    while (queue.length) {
+      await new Promise<void>((resolve) =>
+        requestIdleCallback((deadline) => {
+          while (deadline.timeRemaining() > 0 && queue.length) {
+            worker.postMessage(queue.shift());
+          }
+          resolve();
+        }),
+      );
+    }
+    busy = false;
+  };
+}
+
 const Registration = withLoading(
   async () => {
     loadCountries();
@@ -176,10 +197,11 @@ const Registration = withLoading(
           // eslint-disable-next-line no-console
           console.error(e?.data);
         });
-        const immerReducerFactory = await import(
-          'feature/registration/reducer/reducer/immer'
+        const postMessage = improve(worker);
+        const combinedReducerFactory = await import(
+          'feature/registration/reducer/reducer/combined'
         ).then(def);
-        return immerReducerFactory((state) => worker.postMessage(state));
+        return combinedReducerFactory(postMessage);
       },
       Component: async () => {
         const [RegistrationViewSUIR, UIComponents] = await Promise.all([
