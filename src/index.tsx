@@ -1,8 +1,8 @@
 import User from 'entity/user';
 import UserValidator from 'entity/user/validator';
 import validatorFactory from 'feature/registration/reducer/validate';
+import { mapValues, memoize } from 'lodash-es';
 import { startTransition, StrictMode } from 'react';
-import { memoize } from 'lodash-es';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import storageFactory from 'util/storageEmulator';
@@ -67,10 +67,16 @@ const loadCountries = memoize(() =>
 );
 
 const factories = {
-  T: async () => {
-    const translationFactory = await import('util/translation').then(def);
-    return translationFactory(ExternalUtilTime);
-  },
+  T: mapValues(
+    {
+      en: () => import('util/translation/en'),
+      pt: () => import('util/translation/pt'),
+    },
+    (load) => () =>
+      load()
+        .then(def)
+        .then((translationFactory) => translationFactory(ExternalUtilTime)),
+  ),
 };
 
 const Error: Parameters<typeof withLoading>[1]['Error'] = function Error({
@@ -157,7 +163,7 @@ const Registration = withLoading(
           };
         return RegistrationView;
       },
-      T: factories.T,
+      T: factories.T.en,
     },
     Error,
     Load,
@@ -193,7 +199,7 @@ const List = withLoading(
         };
         return ListView;
       },
-      T: factories.T,
+      T: factories.T.en,
     },
     Error,
     Load,

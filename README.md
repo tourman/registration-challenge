@@ -12,8 +12,7 @@
 - [x] Data is stored in Local Storage using the storage emulator, with occasional network errors simulated at a probability of 1/3.
 - [x] Data manipulation operations utilize asynchronous functions.
 - [x] Microinteractions are implemented to enhance the user experience during data management.
-- [x] Internationalization (i18n) is supported through a translation function, currently only available in English.
-- [ ] Additional languages would require the development of a separate feature, such as a Language.
+- [x] Internationalization (i18n) is supported through a translation function, currently available in English and Portuguese.
 - [ ] To reuse greetings within the list of existing users, a separate feature (e.g., Greeting) needs to be developed, or the greeting component can be extracted from the Registration feature.
 - [ ] Code generation capabilities to be integrated alongside GraphQL functionality.
 
