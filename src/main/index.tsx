@@ -12,15 +12,9 @@ import App from 'App';
 import switchFactory from 'feature/language/component/Button';
 import 'semantic-ui-css/semantic.css';
 import {
-  Dropdown,
-  Form,
-  Input,
   Button,
-  Grid,
   Message,
   Divider,
-  Popup,
-  Container,
   Dimmer,
   Loader,
   Table,
@@ -140,27 +134,13 @@ const Registration = withLoading(
         );
       },
       Component: async () => {
-        const RegistrationViewSUIR = await import(
-          'feature/registration/component/Registration'
-        ).then(def);
+        const [RegistrationViewSUIR, UIComponents] = await Promise.all([
+          import('feature/registration/component/Registration').then(def),
+          import('./registration'),
+        ]);
         const RegistrationView: RegistrationTypes.View =
           function RegistrationView(props) {
-            return (
-              <RegistrationViewSUIR
-                {...props}
-                {...{
-                  Dropdown,
-                  Form,
-                  Input,
-                  Button,
-                  Grid,
-                  Message,
-                  Divider,
-                  Popup,
-                  Container,
-                }}
-              />
-            );
+            return <RegistrationViewSUIR {...props} {...UIComponents} />;
           };
         return RegistrationView;
       },
