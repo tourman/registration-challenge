@@ -326,13 +326,14 @@ function main(render: (content: ReactElement) => void): void {
                       {T && (
                         <Link to={routes.root}>
                           <Button
+                            floated="left"
                             labelPosition="left"
                             icon="arrow left"
                             content={T('Back to form')}
                           />
                         </Link>
                       )}
-                      <Divider hidden />
+                      <Divider clearing hidden />
                       <WaitFor subject={T}>
                         {(notEmptyT) => (
                           <List
@@ -353,13 +354,14 @@ function main(render: (content: ReactElement) => void): void {
                       {T && (
                         <Link to={routes.revisited} relative="route">
                           <Button
+                            floated="left"
                             labelPosition="right"
                             icon="arrow right"
                             content={T('See all users')}
                           />
                         </Link>
                       )}
-                      <Divider hidden />
+                      <Divider clearing hidden />
                       <WaitFor subject={T}>
                         {(notEmptyT) => (
                           <Registration
