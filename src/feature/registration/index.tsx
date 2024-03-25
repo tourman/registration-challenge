@@ -107,7 +107,7 @@ export interface UseRegistration {
   (outerProps: OuterProps): InnerProps;
 }
 
-type View = ComponentType<InnerProps>;
+export type View = ComponentType<InnerProps>;
 
 function registrationFactory({
   useRegistration,
