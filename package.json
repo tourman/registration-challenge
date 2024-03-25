@@ -27,6 +27,7 @@
     "eject": "react-scripts eject",
     "test:watch": "react-scripts test",
     "lint": "eslint --cache --cache-strategy content",
+    "check": "npm run lint . && prettier -uc .",
     "prepare": "husky install",
     "generate": "plop --plopfile ./generators/plopfile.js",
     "storybook": "start-storybook -p 6006 -s public",
