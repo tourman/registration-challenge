@@ -26,12 +26,10 @@ import {
   Icon,
 } from 'semantic-ui-react';
 import type * as RegistrationTypes from 'feature/registration';
-import type * as ListTypes from 'feature/list';
 import type * as LanguageTypes from 'feature/language';
+import type * as DeleteTypes from 'feature/delete';
 import { PropsFrom } from 'util/type';
 import invariant from 'invariant';
-import deleteFactory from 'feature/delete';
-import useDelete from 'feature/delete/useDelete';
 
 const def = <M,>(module: { default: M }): M => {
   return module.default;
@@ -234,16 +232,45 @@ const List = withLoading(
   },
   {
     factories: {
-      Component: async () => {
-        const [ListViewSUIR, UIComponents] = await Promise.all([
-          import('feature/list/component/List').then(def),
-          import('./list'),
-        ]);
-        const ListView: ListTypes.View = function ListView(props) {
-          return <ListViewSUIR {...props} {...UIComponents} />;
-        };
-        return ListView;
-      },
+      Component: () =>
+        Promise.resolve(
+          withLoading(
+            async () => {
+              const [factory, useDelete] = await Promise.all([
+                import('feature/delete').then(def),
+                import('feature/delete/useDelete').then(def),
+              ]);
+              return factory({ useDelete });
+            },
+            {
+              factories: {
+                delete: () => Promise.resolve(storage.delete),
+                Component: async () => {
+                  const [ListViewSUIR, DeleteViewSUIR, UIComponents] =
+                    await Promise.all([
+                      import('feature/list/component/List').then(def),
+                      import('feature/delete/component/Delete').then(def),
+                      import('./delete'),
+                    ]);
+                  const DeleteView: DeleteTypes.View = function ListView(
+                    props,
+                  ) {
+                    return (
+                      <DeleteViewSUIR
+                        {...props}
+                        {...UIComponents}
+                        List={ListViewSUIR}
+                      />
+                    );
+                  };
+                  return DeleteView;
+                },
+              },
+              Load,
+              Error,
+            },
+          ),
+        ),
     },
     Error,
     Load,
@@ -311,8 +338,6 @@ function WaitFor<T>(props: {
   }
   return children(subject);
 }
-
-const Delete = deleteFactory({ useDelete });
 
 function main(render: (content: ReactElement) => void): void {
   render(

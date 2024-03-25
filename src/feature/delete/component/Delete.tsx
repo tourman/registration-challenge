@@ -49,4 +49,4 @@ function Delete<P extends PropsFrom<ListTypes.View>>(
   return <List {...props} {...render} />;
 }
 
-// export default Delete;
+export default Delete;
