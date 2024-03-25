@@ -2,7 +2,7 @@ import User from 'entity/user';
 import UserValidator from 'entity/user/validator';
 import languageFactory from 'feature/language';
 import validatorFactory from 'feature/registration/reducer/validate';
-import { mapValues, memoize, noop } from 'lodash-es';
+import { fromPairs, mapValues, memoize, noop } from 'lodash-es';
 import {
   ReactElement,
   StrictMode,
@@ -29,6 +29,7 @@ import type * as RegistrationTypes from 'feature/registration';
 import type * as ListTypes from 'feature/list';
 import type * as LanguageTypes from 'feature/language';
 import { PropsFrom } from 'util/type';
+import invariant from 'invariant';
 
 const def = <M,>(module: { default: M }): M => {
   return module.default;
@@ -46,7 +47,7 @@ const wait =
     new Promise((resolve) => setTimeout(() => resolve(payload), delay));
 
 // See https://restcountries.com/
-const loadCountries = memoize(() =>
+const _loadCountries = memoize(() =>
   fetch('https://restcountries.com/v3.1/all?fields=name,cca2')
     .then((data) => data.json())
     .then(wait(1000))
@@ -66,6 +67,51 @@ const loadCountries = memoize(() =>
       ),
     ),
 );
+
+const getClient = memoize(async () => {
+  const { ApolloClient, InMemoryCache, gql } = await import('@apollo/client');
+  return new ApolloClient({
+    cache: new InMemoryCache(),
+    uri: 'https://countries.trevorblades.com',
+  });
+});
+
+interface RawCountries {
+  countries: { native: string; code: string }[];
+}
+
+function areCountries(data: any): data is RawCountries {
+  const countries = data?.countries;
+  return (
+    Array.isArray(countries) &&
+    countries.every(
+      (country) =>
+        typeof country === 'object' &&
+        country &&
+        ['native', 'code'].every((key) => typeof country[key] === 'string'),
+    )
+  );
+}
+
+// https://github.com/trevorblades/countries?tab=readme-ov-file
+const loadCountries = async () => {
+  const { gql } = await import('@apollo/client');
+  const client = await getClient();
+  const query = gql`
+    {
+      countries {
+        native
+        code
+      }
+    }
+  `;
+  const { data } = await client.query({ query });
+  invariant(areCountries(data), 'Unknown result: ' + JSON.stringify(data));
+  const result = fromPairs(
+    data.countries.map(({ native, code }) => [code, native]),
+  );
+  return result;
+};
 
 const factories = {
   T: mapValues(

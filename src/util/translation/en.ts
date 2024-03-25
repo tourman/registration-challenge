@@ -4,7 +4,13 @@ import isCountry from './isCountry';
 const enFactory: Factory = (Time) =>
   function T(key, placeholder?, countries?): string {
     if (isCountry(key) && placeholder && !('name' in placeholder)) {
-      return placeholder?.[key.replace('country:', '')] ?? key;
+      const countryKey = key.replace('country:', '');
+      return (
+        placeholder?.[countryKey] ??
+        placeholder?.[countryKey.toLocaleLowerCase()] ??
+        placeholder?.[countryKey.toUpperCase()] ??
+        key
+      );
     }
     switch (key) {
       case 'lang:en':
