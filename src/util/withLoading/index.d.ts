@@ -12,4 +12,4 @@ declare function withLoading<
   },
 ): ComponentType<Omit<P, keyof F>>;
 
-// export default withLoading;
+export default withLoading;

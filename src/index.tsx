@@ -15,6 +15,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import storageFactory from 'util/storageEmulator';
 import ExternalUtilTime from 'util/time';
 import translationFactory from 'util/translation';
+import withLoading from 'util/withLoading';
 import App from './App';
 import 'semantic-ui-css/semantic.css';
 import {
@@ -96,6 +97,20 @@ const loadCountries = () =>
         ]),
       ),
     );
+
+const Error: Parameters<typeof withLoading>[1]['Error'] = function Error({
+  error,
+}) {
+  return <Message error content={error?.toString() ?? 'Unknown error'} />;
+};
+
+const Load: Parameters<typeof withLoading>[1]['Load'] = function Load() {
+  return (
+    <Dimmer active inverted>
+      <Loader />
+    </Dimmer>
+  );
+};
 
 const T = translationFactory(ExternalUtilTime);
 
