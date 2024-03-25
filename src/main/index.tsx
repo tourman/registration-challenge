@@ -365,12 +365,13 @@ function WaitFor<T>(props: {
   return children(subject);
 }
 
+// todo: combine default lang en, Lang type and loadCountries by default
 function main(render: (content: ReactElement) => void): void {
   render(
     <StrictMode>
       <App>
         <Language defaultLang="en" Component={Switch} from={from}>
-          {({ renderSwitch, T }) => (
+          {({ renderSwitch, T, lang }) => (
             <BrowserRouter basename={basename}>
               {renderSwitch()}
               <Routes>
@@ -433,6 +434,7 @@ function main(render: (content: ReactElement) => void): void {
                               startTransition(() => task())
                             }
                             T={notEmptyT}
+                            lang={lang}
                           />
                         )}
                       </WaitFor>

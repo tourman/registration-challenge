@@ -82,6 +82,7 @@ function Registration({
   done,
   user,
   T,
+  lang,
   allowSubmit,
   submitting,
   error,
@@ -122,8 +123,10 @@ function Registration({
           value: key,
           text: T(`country:${key}`),
         }))
-        .sort(({ text: a }, { text: b }) => (a < b ? -1 : 1)),
-    [countries, T],
+        .sort(({ text: a }, { text: b }) =>
+          a.localeCompare(b, lang, { sensitivity: 'base' }),
+        ),
+    [countries, T, lang],
   );
   const fieldProps = { fields, onChange, T, submitting };
   return (

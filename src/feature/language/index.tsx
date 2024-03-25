@@ -43,7 +43,11 @@ interface Observable {
 function languageFactory<L extends string, T extends Translate<L>>(
   tFactories: Record<L, () => Promise<T>>,
 ): ComponentType<{
-  children: (props: { renderSwitch: () => ReactNode; T?: T }) => ReactElement;
+  children: (props: {
+    renderSwitch: () => ReactNode;
+    T?: T;
+    lang: L;
+  }) => ReactElement;
   defaultLang: L;
   Component: View<L>;
   from: Observable;
@@ -84,6 +88,7 @@ function languageFactory<L extends string, T extends Translate<L>>(
         />
       ),
       T: deferredT,
+      lang,
     });
   };
 }

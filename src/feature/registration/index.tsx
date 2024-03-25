@@ -85,6 +85,8 @@ export interface Translate {
 
 interface TransitProps {
   T: Translate;
+  // todo: use the real lang type
+  lang: string;
 }
 
 export interface OuterProps extends TransitProps {

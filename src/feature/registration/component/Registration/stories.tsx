@@ -38,6 +38,7 @@ const defaultArgs: Omit<PropsFrom<typeof Registration>, Action> = {
   error: new Error('General error'),
   done: { name: 'a', surname: 'b', birthdate: 'c', country: 'd' },
   countries: { fr: 'France', pt: 'Portugal' },
+  lang: 'en',
 
   Dropdown,
   Form,
