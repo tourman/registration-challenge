@@ -17,7 +17,6 @@ import {
   Divider,
   Dimmer,
   Loader,
-  Table,
   Icon,
 } from 'semantic-ui-react';
 import type * as RegistrationTypes from 'feature/registration';
@@ -161,21 +160,12 @@ const List = withLoading(
   {
     factories: {
       Component: async () => {
-        const ListViewSUIR = await import('feature/list/component/List').then(
-          def,
-        );
+        const [ListViewSUIR, UIComponents] = await Promise.all([
+          import('feature/list/component/List').then(def),
+          import('./list'),
+        ]);
         const ListView: ListTypes.View = function ListView(props) {
-          return (
-            <ListViewSUIR
-              {...props}
-              {...{
-                Dimmer,
-                Loader,
-                Message,
-                Table,
-              }}
-            />
-          );
+          return <ListViewSUIR {...props} {...UIComponents} />;
         };
         return ListView;
       },
