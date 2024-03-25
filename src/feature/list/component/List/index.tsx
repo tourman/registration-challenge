@@ -2,6 +2,8 @@ import type { InnerProps } from 'feature/list';
 import type * as SUIR from 'semantic-ui-react';
 import './style.css';
 
+const emptyRender = () => <></>;
+
 function List({
   loading,
   error,
@@ -9,6 +11,8 @@ function List({
   countries,
   T,
   Time,
+  renderHeaderCell = emptyRender,
+  renderBodyCell = emptyRender,
 
   Dimmer,
   Loader,
@@ -33,16 +37,18 @@ function List({
               <Table.HeaderCell>{T('Name')}</Table.HeaderCell>
               <Table.HeaderCell>{T('Country')}</Table.HeaderCell>
               <Table.HeaderCell>{T('Birthdate')}</Table.HeaderCell>
+              {renderHeaderCell()}
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {list.map(({ id, name, surname, country, birthdate }) => (
+            {list.map(({ id, name, surname, country, birthdate }, index) => (
               <Table.Row key={id}>
                 <Table.Cell>
                   {name} {surname}
                 </Table.Cell>
                 <Table.Cell>{T(`country:${country}`, countries)}</Table.Cell>
                 <Table.Cell>{Time.formatDate(birthdate)}</Table.Cell>
+                {renderBodyCell(index)}
               </Table.Row>
             ))}
           </Table.Body>

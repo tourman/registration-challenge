@@ -30,6 +30,8 @@ import type * as ListTypes from 'feature/list';
 import type * as LanguageTypes from 'feature/language';
 import { PropsFrom } from 'util/type';
 import invariant from 'invariant';
+import deleteFactory from 'feature/delete';
+import useDelete from 'feature/delete/useDelete';
 
 const def = <M,>(module: { default: M }): M => {
   return module.default;
@@ -309,6 +311,8 @@ function WaitFor<T>(props: {
   }
   return children(subject);
 }
+
+const Delete = deleteFactory({ useDelete });
 
 function main(render: (content: ReactElement) => void): void {
   render(

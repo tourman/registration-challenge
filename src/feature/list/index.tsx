@@ -1,11 +1,11 @@
-import { ComponentType } from 'react';
+import { ComponentType, ReactElement } from 'react';
 import type * as User from 'entity/user';
 
-type ID = string | number;
+export type ID = string | number;
 
 export type View = ComponentType<InnerProps>;
 
-type Entry = User.Entry & { id: ID };
+export type Entry = User.Entry & { id: ID };
 
 export type TranslateArgs =
   | ['Name']
@@ -21,7 +21,12 @@ export interface TimeClass {
   formatDate(date: string): string;
 }
 
-interface TransitProps {
+interface Render {
+  renderHeaderCell?: () => ReactElement;
+  renderBodyCell?: (index: number) => ReactElement;
+}
+
+interface TransitProps extends Render {
   T: Translate;
   Time: TimeClass;
 }

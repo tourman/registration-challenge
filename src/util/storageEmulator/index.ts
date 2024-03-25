@@ -1,9 +1,12 @@
 import type { Load } from 'feature/list';
 import type { Save } from 'feature/registration';
+import type { Delete } from 'feature/delete';
+import invariant from 'invariant';
 
 interface Storage {
   save: Save;
   load: Load;
+  delete: Delete;
 }
 
 async function emulateNetwork() {
@@ -35,6 +38,16 @@ class LocalStorage implements Storage {
   load: Load = async () => {
     await emulateNetwork();
     return this.#load();
+  };
+  delete: Delete = async (id) => {
+    await emulateNetwork();
+    const list = await this.#load();
+    // todo: make searching the ID async
+    const index = list.findIndex((item) => item.id === id);
+    invariant(index !== -1, 'Unable to find saved ID: ' + id);
+    list.splice(index, 1);
+    localStorage.setItem(this.cacheKey, JSON.stringify(list));
+    return list;
   };
 }
 
