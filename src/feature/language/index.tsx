@@ -3,7 +3,6 @@ import {
   ComponentType,
   ReactElement,
   ReactNode,
-  useCallback,
   useDeferredValue,
   useLayoutEffect,
   useState,
@@ -58,22 +57,21 @@ function languageFactory<L extends string, T extends Translate<L>>(
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<unknown>();
     const [lang, setLang] = useState(defaultLang);
-    const [translate, setTranslate] = useState<T>();
-    const onChange = useCallback<typeof setLang>((newLang) => {
-      setLoading(true);
-      setLang(newLang);
-    }, []);
+    const [payload, setTranslate] = useState<{ T?: T; lang: L }>({
+      lang: defaultLang,
+    });
     useLayoutEffect(() => {
       if (error) {
         return;
       }
+      setLoading(true);
       return from(loadT(lang)).subscribe({
-        next: (t) => setTranslate(() => t),
+        next: (t) => setTranslate({ T: t, lang }),
         error: (e) => setError(() => e),
         finally: () => setLoading(false),
       });
     }, [from, lang, error]);
-    const deferredT = useDeferredValue(translate);
+    const deferredPayload = useDeferredValue(payload);
     return children({
       renderSwitch: () => (
         <Component
@@ -82,13 +80,12 @@ function languageFactory<L extends string, T extends Translate<L>>(
             error,
             lang,
             languages,
-            onChange,
-            T: translate,
+            onChange: setLang,
+            T: payload.T,
           }}
         />
       ),
-      T: deferredT,
-      lang,
+      ...deferredPayload,
     });
   };
 }

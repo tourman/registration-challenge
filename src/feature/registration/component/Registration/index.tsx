@@ -115,19 +115,20 @@ function Registration({
     : never;
   Container: typeof SUIR.Container;
 }) {
-  const countryOptions = useMemo(
-    () =>
-      Object.keys(countries ?? {})
-        .map((key) => ({
-          key,
-          value: key,
-          text: T(`country:${key}`),
-        }))
-        .sort(({ text: a }, { text: b }) =>
-          a.localeCompare(b, lang, { sensitivity: 'base' }),
-        ),
-    [countries, T, lang],
-  );
+  const countryOptions = useMemo(() => {
+    const collator = new Intl.Collator(lang, {
+      usage: 'sort',
+      sensitivity: 'accent',
+    });
+    const result = Object.keys(countries ?? {})
+      .map((key) => ({
+        key,
+        value: key,
+        text: T(`country:${key}`),
+      }))
+      .sort(({ text: a }, { text: b }) => collator.compare(a, b));
+    return result;
+  }, [countries, T, lang]);
   const fieldProps = { fields, onChange, T, submitting };
   return (
     <Context.Provider value={Form}>
