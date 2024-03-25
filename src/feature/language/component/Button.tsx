@@ -58,3 +58,5 @@ const buttonFactory = <L extends string>() => {
   }
   return ButtonSwitch;
 };
+
+export default buttonFactory;
