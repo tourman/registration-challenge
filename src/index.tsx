@@ -6,7 +6,7 @@ import immerReducerFactory from 'feature/registration/reducer/reducer/immer';
 import getInitialState from 'feature/registration/reducer/getInitialState';
 import validatorFactory from 'feature/registration/reducer/validate';
 import useRegistration from 'feature/registration/useRegistration';
-import React, { ComponentType } from 'react';
+import { startTransition, StrictMode, ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
 import ExternalUtilTime from 'util/time';
 import App from './App';
@@ -50,7 +50,7 @@ const RegistrationView: PropsFrom<typeof Registration>['Component'] =
   };
 
 root.render(
-  <React.StrictMode>
+  <StrictMode>
     <App>
       <Registration
         userFactory={() =>
@@ -104,7 +104,8 @@ root.render(
         getInitialState={getInitialState}
         T={(string) => string}
         Component={RegistrationView}
+        registerSecondaryTask={(task) => startTransition(() => task())}
       />
     </App>
-  </React.StrictMode>,
+  </StrictMode>,
 );

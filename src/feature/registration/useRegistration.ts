@@ -13,6 +13,7 @@ const useRegistration: UseRegistration = function useRegistration({
   save,
   reducer,
   getInitialState,
+  registerSecondaryTask,
   ...rest
 }) {
   const [
@@ -43,15 +44,17 @@ const useRegistration: UseRegistration = function useRegistration({
     ) as {
       [K in keyof typeof validating]: NonNullable<(typeof validating)[K]>;
     };
+    const dispatchTask = (...args: Parameters<typeof dispatch>) =>
+      registerSecondaryTask(() => dispatch(...args));
     user.set(entry);
     // todo: discard update after unmount
     user
       .validate()
-      .then(() => dispatch({ type: 'VALIDATE', validated: validating }))
+      .then(() => dispatchTask({ type: 'VALIDATE', validated: validating }))
       .catch((err) =>
-        dispatch({ type: 'VALIDATE', error: err, validated: validating }),
+        dispatchTask({ type: 'VALIDATE', error: err, validated: validating }),
       );
-  }, [user, validating]);
+  }, [user, validating, registerSecondaryTask]);
   const [errorInstance, setErrorInstance] = useState<Error | undefined>();
   useEffect(() => {
     if (!submitting) {
@@ -70,8 +73,10 @@ const useRegistration: UseRegistration = function useRegistration({
     Awaited<ReturnType<typeof loadCountries>>
   >({});
   useLayoutEffect(() => {
-    loadCountries().then(setCountries);
-  }, [loadCountries]);
+    loadCountries().then((newCountries) =>
+      registerSecondaryTask(() => setCountries(newCountries)),
+    );
+  }, [loadCountries, registerSecondaryTask]);
   return {
     onChange,
     onSubmit,

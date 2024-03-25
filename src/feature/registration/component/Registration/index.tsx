@@ -8,8 +8,10 @@ import {
   useMemo,
   createContext,
   useContext,
+  memo,
 } from 'react';
 import type * as SUIR from 'semantic-ui-react';
+import { shallowEqual } from 'shallow-equal';
 import './style.css';
 import invariant from 'invariant';
 
@@ -35,32 +37,46 @@ function FormField<C>(
 
 const idPrefix = 'registration';
 
-function Field<K extends Key>(
-  props: {
-    name: K;
-    children: (props: {
-      id: string;
-      value: string;
-      error: boolean;
-      label: string;
-      handleChange: (value: string) => void;
-      disabled: boolean;
-    }) => ReactElement;
-    fields: Pick<InnerProps, Key>;
-    submitting: boolean;
-  } & Pick<InnerProps, 'onChange' | 'T'>,
-): ReturnType<FunctionComponent> {
-  const { name, children, fields, onChange, T, submitting } = props;
-  const { value, error } = fields[name];
-  return children({
-    id: `${idPrefix}-${name}`,
-    value,
-    error: !!error,
-    label: error ? T(`error:${error}`) : T(`label:${name}`),
-    handleChange: (change) => onChange({ [name]: change }),
-    disabled: submitting,
-  });
+type FieldProps<K extends Key> = {
+  name: K;
+  children: (props: {
+    id: string;
+    value: string;
+    error: boolean;
+    label: string;
+    handleChange: (value: string) => void;
+    disabled: boolean;
+  }) => ReactElement;
+  fields: Pick<InnerProps, Key>;
+  submitting: boolean;
+  dependency?: unknown;
+} & Pick<InnerProps, 'onChange' | 'T'>;
+
+function extractToCompare<K extends Key>(props: FieldProps<K>) {
+  const { name, fields, submitting, onChange, T, dependency } = props;
+  const value = fields[name];
+  return { name, value, submitting, onChange, T, dependency };
 }
+
+const Field = memo(
+  function Field<K extends Key>(
+    props: FieldProps<K>,
+  ): ReturnType<FunctionComponent> {
+    const { name, children, fields, onChange, T, submitting } = props;
+    const { value, error } = fields[name];
+    return children({
+      id: `${idPrefix}-${name}`,
+      value,
+      error: !!error,
+      label: error ? T(`error:${error}`) : T(`label:${name}`),
+      handleChange: (change) => onChange({ [name]: change }),
+      disabled: submitting,
+    });
+  },
+  (prev, next) => shallowEqual(extractToCompare(prev), extractToCompare(next)),
+);
+
+Field.displayName = 'MemoizedField';
 
 function Registration({
   done,
@@ -144,7 +160,7 @@ function Registration({
             />
           )}
         </Field>
-        <Field name="country" {...fieldProps}>
+        <Field name="country" {...fieldProps} dependency={countryOptions}>
           {({ handleChange, disabled, ...props }) => (
             <FormField
               {...props}

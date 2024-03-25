@@ -84,6 +84,7 @@ interface OuterProps extends TransitProps {
   save: Save;
   reducer: Reducer;
   getInitialState: GetInitialState;
+  registerSecondaryTask: (task: () => void) => void;
 }
 
 export interface InnerProps extends Omit<Display, 'error'>, TransitProps {

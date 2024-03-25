@@ -1,5 +1,9 @@
 - [ ] Close country dropdown on change
 - [x] Check form saving
-- [ ] Performance while typing. Probably the validation
+- [x] Performance while typing. Probably the validation
 - [ ] Form wrapper
 - [ ] Translations by type
+- [ ] Using reducer: DIP for Redux-like
+- [ ] Observables
+- [ ] Old entries feature
+- [ ] Select language feature
