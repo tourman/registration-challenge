@@ -1,8 +1,5 @@
 import User from 'entity/user';
 import UserValidator from 'entity/user/validator';
-import listFactory from 'feature/list';
-import ListViewSUIR from 'feature/list/component/List';
-import useList from 'feature/list/useList';
 import validatorFactory from 'feature/registration/reducer/validate';
 import { startTransition, StrictMode } from 'react';
 import { memoize } from 'lodash-es';
@@ -29,7 +26,7 @@ import {
   Table,
 } from 'semantic-ui-react';
 import type * as RegistrationTypes from 'feature/registration';
-import { PropsFrom } from 'util/type';
+import type * as ListTypes from 'feature/list';
 
 const root = createRoot(document.getElementById('root') as HTMLElement);
 
@@ -47,22 +44,6 @@ const wait =
   (delay: number): (<T>(payload: T) => Promise<T>) =>
   (payload) =>
     new Promise((resolve) => setTimeout(() => resolve(payload), delay));
-
-const List = listFactory({ useList });
-
-const ListView: PropsFrom<typeof List>['Component'] = function ListView(props) {
-  return (
-    <ListViewSUIR
-      {...props}
-      {...{
-        Dimmer,
-        Loader,
-        Message,
-        Table,
-      }}
-    />
-  );
-};
 
 // See https://restcountries.com/
 const loadCountries = memoize(() =>
@@ -176,6 +157,41 @@ const Registration = withLoading(
   },
 );
 
+const List = withLoading(
+  async () => {
+    const [factory, useList] = await Promise.all([
+      import('feature/list').then(def),
+      import('feature/list/useList').then(def),
+    ]);
+    return factory({ useList });
+  },
+  {
+    factories: {
+      Component: async () => {
+        const ListViewSUIR = await import('feature/list/component/List').then(
+          def,
+        );
+        const ListView: ListTypes.View = function ListView(props) {
+          return (
+            <ListViewSUIR
+              {...props}
+              {...{
+                Dimmer,
+                Loader,
+                Message,
+                Table,
+              }}
+            />
+          );
+        };
+        return ListView;
+      },
+    },
+    Error,
+    Load,
+  },
+);
+
 const T = translationFactory(ExternalUtilTime);
 
 const storage = storageFactory('list');
@@ -210,7 +226,6 @@ root.render(
                   loadCountries={loadCountries}
                   T={T}
                   Time={ExternalUtilTime}
-                  Component={ListView}
                 />
               </>
             }
