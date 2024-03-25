@@ -1,7 +1,6 @@
 import User from 'entity/user';
 import UserValidator from 'entity/user/validator';
 import languageFactory from 'feature/language';
-import validatorFactory from 'feature/registration/reducer/validate';
 import { fromPairs, mapValues, memoize, noop } from 'lodash-es';
 import {
   ReactElement,
@@ -170,36 +169,17 @@ const Registration = withLoading(
       getInitialState: () =>
         import('feature/registration/reducer/getInitialState').then(def),
       reducer: async () => {
+        const worker = new Worker(
+          new URL('./reducer.validator.worker.ts', import.meta.url),
+        );
+        worker.addEventListener('message', (e) => {
+          // eslint-disable-next-line no-console
+          console.error(e?.data);
+        });
         const immerReducerFactory = await import(
           'feature/registration/reducer/reducer/immer'
         ).then(def);
-        return immerReducerFactory(
-          // todo: replace with the scheduler API
-          validatorFactory(
-            (() => {
-              type Task = Parameters<typeof requestIdleCallback>[0];
-              const tasks: Task[] = [];
-              let working = false;
-              function handle(...args: Parameters<Task>) {
-                const task = tasks.shift();
-                if (!task) {
-                  working = false;
-                  return;
-                } else {
-                  task(...args);
-                  requestIdleCallback(handle);
-                }
-              }
-              return (task: Task) => {
-                tasks.push(task);
-                if (!working) {
-                  working = true;
-                  requestIdleCallback(handle);
-                }
-              };
-            })(),
-          ),
-        );
+        return immerReducerFactory((state) => worker.postMessage(state));
       },
       Component: async () => {
         const [RegistrationViewSUIR, UIComponents] = await Promise.all([
