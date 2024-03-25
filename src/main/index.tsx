@@ -3,7 +3,13 @@ import UserValidator from 'entity/user/validator';
 import languageFactory from 'feature/language';
 import validatorFactory from 'feature/registration/reducer/validate';
 import { mapValues, memoize, noop } from 'lodash-es';
-import { ReactElement, StrictMode, startTransition } from 'react';
+import {
+  ReactElement,
+  StrictMode,
+  startTransition,
+  lazy,
+  Suspense,
+} from 'react';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import storageFactory from 'util/storageEmulator';
 import ExternalUtilTime from 'util/time';
@@ -22,6 +28,7 @@ import {
 import type * as RegistrationTypes from 'feature/registration';
 import type * as ListTypes from 'feature/list';
 import type * as LanguageTypes from 'feature/language';
+import { PropsFrom } from 'util/type';
 
 const def = <M,>(module: { default: M }): M => {
   return module.default;
@@ -137,9 +144,29 @@ const Registration = withLoading(
           import('feature/registration/component/Registration').then(def),
           import('./registration'),
         ]);
+        type P = PropsFrom<typeof RegistrationViewSUIR>['Popup'];
+        const LazyPopup = lazy<P>(() =>
+          import('./Popup').catch(() => ({
+            default: ({ trigger }) => <>{trigger}</>,
+          })),
+        );
+        const Popup: P = function Popup(props) {
+          const { trigger } = props;
+          return (
+            <Suspense fallback={trigger}>
+              <LazyPopup {...props} />
+            </Suspense>
+          );
+        };
         const RegistrationView: RegistrationTypes.View =
           function RegistrationView(props) {
-            return <RegistrationViewSUIR {...props} {...UIComponents} />;
+            return (
+              <RegistrationViewSUIR
+                {...props}
+                {...UIComponents}
+                Popup={Popup}
+              />
+            );
           };
         return RegistrationView;
       },

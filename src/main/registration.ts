@@ -6,6 +6,5 @@ export {
   Grid,
   Message,
   Divider,
-  Popup,
   Container,
 } from 'semantic-ui-react';

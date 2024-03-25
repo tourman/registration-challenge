@@ -109,7 +109,9 @@ function Registration({
   Grid: typeof SUIR.Grid;
   Message: typeof SUIR.Message;
   Divider: typeof SUIR.Divider;
-  Popup: typeof SUIR.Popup;
+  Popup: typeof SUIR.Popup extends ComponentType<infer C>
+    ? ComponentType<C>
+    : never;
   Container: typeof SUIR.Container;
 }) {
   const countryOptions = useMemo(
