@@ -40,6 +40,7 @@ const pick =
   ({ [key]: module }) =>
     module;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const wait =
   (delay: number): (<T>(payload: T) => Promise<T>) =>
   (payload) =>
@@ -49,7 +50,6 @@ const wait =
 const _loadCountries = memoize(() =>
   fetch('https://restcountries.com/v3.1/all?fields=name,cca2')
     .then((data) => data.json())
-    .then(wait(1000))
     .then((countries) => {
       interface Country {
         cca2: string;
@@ -181,7 +181,7 @@ const Registration = withLoading(
   async () => {
     loadCountries();
     const [factory, useRegistration] = await Promise.all([
-      import('feature/registration').then(def).then(wait(2000)),
+      import('feature/registration').then(def),
       import('feature/registration/useRegistration').then(def),
     ]);
     return factory({ useRegistration });
@@ -307,10 +307,6 @@ const basename = window.location.pathname
   .replace(/\/$/, '')
   .replace(new RegExp(`(${Object.values(routes).join('|')})$`), '');
 
-function artificialT<M>(factory: () => Promise<M>): () => Promise<M> {
-  return () => factory().then(wait(1000));
-}
-
 type Lang = 'en' | 'pt';
 
 function passLangStruct<T, S extends Record<Lang, T>>(
@@ -321,8 +317,8 @@ function passLangStruct<T, S extends Record<Lang, T>>(
 
 const Language = languageFactory(
   passLangStruct({
-    en: artificialT(factories.T.en),
-    pt: artificialT(factories.T.pt),
+    en: factories.T.en,
+    pt: factories.T.pt,
   }),
 );
 
