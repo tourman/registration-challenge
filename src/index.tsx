@@ -7,7 +7,6 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import storageFactory from 'util/storageEmulator';
 import ExternalUtilTime from 'util/time';
-import translationFactory from 'util/translation';
 import withLoading from 'util/withLoading';
 import App from './App';
 import 'semantic-ui-css/semantic.css';
@@ -66,6 +65,13 @@ const loadCountries = memoize(() =>
       ),
     ),
 );
+
+const factories = {
+  T: async () => {
+    const translationFactory = await import('util/translation').then(def);
+    return translationFactory(ExternalUtilTime);
+  },
+};
 
 const Error: Parameters<typeof withLoading>[1]['Error'] = function Error({
   error,
@@ -151,6 +157,7 @@ const Registration = withLoading(
           };
         return RegistrationView;
       },
+      T: factories.T,
     },
     Error,
     Load,
@@ -186,13 +193,12 @@ const List = withLoading(
         };
         return ListView;
       },
+      T: factories.T,
     },
     Error,
     Load,
   },
 );
-
-const T = translationFactory(ExternalUtilTime);
 
 const storage = storageFactory('list');
 
@@ -224,7 +230,6 @@ root.render(
                 <List
                   loadList={storage.load}
                   loadCountries={loadCountries}
-                  T={T}
                   Time={ExternalUtilTime}
                 />
               </>
@@ -247,7 +252,6 @@ root.render(
                     new User(new UserValidator(loadCountries, ExternalUtilTime))
                   }
                   save={storage.save}
-                  T={T}
                   registerSecondaryTask={(task) =>
                     startTransition(() => task())
                   }
